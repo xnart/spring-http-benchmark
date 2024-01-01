@@ -4,12 +4,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
 }
 
-
 repositories {
     mavenCentral()
 }
-
-
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -20,4 +17,3 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("org.postgresql:postgresql")
 }
-

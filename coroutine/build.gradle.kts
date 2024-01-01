@@ -7,11 +7,9 @@ plugins {
     kotlin("plugin.spring") version "1.9.21"
 }
 
-
 repositories {
     mavenCentral()
 }
-
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -33,4 +31,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "21"
     }
 }
-

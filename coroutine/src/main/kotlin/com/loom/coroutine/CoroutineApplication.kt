@@ -17,11 +17,9 @@ fun main(args: Array<String>) {
     runApplication<CoroutineApplication>(*args)
 }
 
-
 @RestController
 @RequestMapping("/")
 class TestController(private val repo: MemberRepository) {
-
 
     @PostMapping
     suspend fun test(): Member {
@@ -36,5 +34,5 @@ interface MemberRepository : CoroutineCrudRepository<Member, Int>
 data class Member(
     @Id
     val id: Int?,
-    val name: String
+    val name: String,
 )
