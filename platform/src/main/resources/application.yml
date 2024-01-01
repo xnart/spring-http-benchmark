@@ -1,0 +1,26 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+  application:
+    name: Platform Threads
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  prometheus:
+    metrics:
+      export:
+        pushgateway:
+          enabled: true
+          push-rate: 1s
+          job: ${spring.application.name}
+          shutdown-operation: put
+
