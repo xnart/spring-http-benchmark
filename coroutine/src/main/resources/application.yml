@@ -6,10 +6,13 @@ spring:
     name: postgres
     username: postgres
     password: postgres
-    url: r2dbc:pool:postgresql://localhost:5432
+    url: r2dbc:pool:postgresql://db:5432
   application:
     name: Kotlin Coroutines
 management:
+  tracing:
+    sampling:
+      probability: 1
   metrics:
     tags:
       application: ${spring.application.name}
@@ -24,4 +27,5 @@ management:
           enabled: true
           push-rate: 1s
           job: ${spring.application.name}
+          base-url: http://pushgateway:9091
           shutdown-operation: put

@@ -5,7 +5,7 @@ spring:
   datasource:
     username: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://db:5432/postgres
   threads:
     virtual:
       enabled: true
@@ -15,6 +15,9 @@ spring:
     timeout: P1S
 
 management:
+  tracing:
+    sampling:
+      probability: 1
   metrics:
     tags:
       application: ${spring.application.name}
@@ -29,3 +32,5 @@ management:
           enabled: true
           push-rate: 1s
           job: ${spring.application.name}
+          base-url: http://pushgateway:9091
+          shutdown-operation: put

@@ -1,7 +1,12 @@
-version: "3.5"
 services:
   db:
     image: postgres
+    cpuset: '7-10'
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -12,8 +17,12 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    cpuset: '4-6'
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
     command:
     - '--config.file=/etc/prometheus/prometheus.yml'
     - '--storage.tsdb.path=/prometheus'
@@ -29,17 +38,28 @@ services:
 
   pushgateway:
     image: prom/pushgateway
+    cpuset: '4-6'
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
     volumes:
       - pushgateway_data:/data
     command:
       - --persistence.file=/data/pushgateway.data
       - --persistence.interval=1h
-
     ports:
       - "9091:9091"
   grafana:
     image: grafana/grafana
     container_name: grafana
+    cpuset: '4-6'
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -49,6 +69,60 @@ services:
     volumes:
       - ./grafana/custom.ini:/etc/grafana/grafana.ini
       - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+  virtual:
+    image: benchmark/virtual:latest
+    cpuset: '0-3'
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+    depends_on:
+      - db
+      - pushgateway
+    ports:
+      - "8080:8080"
+  webflux:
+    image: benchmark/webflux:latest
+    cpuset: '0-3'
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+    depends_on:
+      - db
+      - pushgateway
+    ports:
+      - "8081:8081"
+  coroutine:
+    image: benchmark/coroutine:latest
+    cpuset: '0-3'
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+    depends_on:
+      - db
+      - pushgateway
+    ports:
+      - "8082:8082"
+  platform:
+    image: benchmark/platform:latest
+    cpuset: '0-3'
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+    depends_on:
+      - db
+      - pushgateway
+    ports:
+      - "8083:8083"
 volumes:
   prom_data:
   pushgateway_data:

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS member (
-    id int,
+    id serial primary key,
     name varchar
 );
 
